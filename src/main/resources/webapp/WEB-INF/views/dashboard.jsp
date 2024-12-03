@@ -19,12 +19,32 @@
 
 --%>
 <%@ include file="00-header.jsp" %>
+<style>
+	.tileContainer {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+		gap: 1rem; /* Add spacing between tiles */
+	}
+
+	.tileRow1 {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between; /* Ensures consistent height */
+		align-items: center;
+		text-align: center; /* Optional: Center align content */
+		padding: 1rem;
+		border: 1px solid #ccc; /* Optional: Add borders */
+		background-color: #f9f9f9; /* Optional: Add a background color */
+		box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
+	}
+
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <div class="content" id="mainContent">
 <div class="tileWrapper">
-	<div>
+	<div class="tileContainer">
 		<a class="tileRow1" href="${ctxPath}/manager/chargepoints">
 			Number of<br>Charge Points
 			<span class="base formatNumber">${stats.numChargeBoxes}</span>
@@ -93,7 +113,15 @@
 						<td>${cs.description}</td>
 						<td>${cs.connectorId}</td>
 						<td data-sort-value="${cs.statusTimestamp.millis}">${cs.timeStamp}</td>
-						<td><encode:forHtml value="${cs.status}" /></td>
+						<td>
+							<c:choose>
+								<c:when test="${cs.jsonAndDisconnected}">
+								</c:when>
+								<c:otherwise>
+									<encode:forHtml value="${cs.status}" />
+								</c:otherwise>
+							</c:choose>
+						</td>
 						<td><button type="button" class="greenView" onclick="viewLogResults('${cs.chargeBoxId}')">View</button></td>
 					</tr>
 				</c:forEach>

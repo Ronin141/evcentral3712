@@ -19,40 +19,44 @@ import de.rwth.idsg.steve.utils.LogFileRetriever;
 // @RequestMapping("")
 public class LogFilter {
 
-	 @GetMapping("/log/charger/{id}")
-	 public String filterLogMessages(@PathVariable("id") String chargeBoxId, Model model) {
+    @GetMapping("/log/charger/{id}")
+    public String filterLogMessages(@PathVariable("id") String chargeBoxId, Model model) {
         String filePath = LogFileRetriever.INSTANCE.getLogFilePathOrErrorMessage();
         List<String> filteredMessages = new ArrayList<>();
-
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-
+    
             while ((line = reader.readLine()) != null) {
-                // Normalize line by removing all whitespace
+                // Normalize line for searching
                 String normalizedLine = line.replaceAll("\\s+", "").toLowerCase();
-
-                // Normalize search keywords
                 String normalizedChargeBoxId = chargeBoxId.replaceAll("\\s+", "").toLowerCase();
-
-                // Check if the normalized line contains the normalized search terms
-                if (normalizedLine.contains("[info]") && normalizedLine.contains("ws.websocketlogger") &&
-                        normalizedLine.contains(normalizedChargeBoxId) ) {
-						// &&(normalizedLine.contains("sending:") || normalizedLine.contains("received:"))
-                    
-                    // Clean up the line by removing unwanted characters
-                    String cleanedLine = line.replaceAll("[,\\\\]", ""); // Remove commas and backslashes
-                    
-                    filteredMessages.add(cleanedLine.trim()); // Add cleaned and trimmed lines to the list
+    
+                // Check if the line matches the search criteria
+                if (normalizedLine.contains("[info]") &&
+                    normalizedLine.contains("ws.websocketlogger") &&
+                    normalizedLine.contains(normalizedChargeBoxId) &&
+                    (normalizedLine.contains("sending:") || normalizedLine.contains("received:"))) {
+    
+                    // Remove the class name and session ID using regex
+                    String cleanedLine = line
+                        .replaceAll("de\\.rwth\\.idsg\\.steve\\.ocpp\\.ws\\.WebSocketLogger", "") // Remove class name
+                        .replaceAll("sessionId=[^\\s]*", "") // Remove session ID
+                        .replaceAll("\\[\\s+\\]", "") // Clean up any extra brackets left behind
+                        .trim();
+    
+                    filteredMessages.add(cleanedLine); // Add cleaned line to the filtered list
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Add filtered messages to the model to make them available in the JSP
+    
+        // Add the filtered messages to the model for JSP rendering
         model.addAttribute("filteredMessages", filteredMessages);
-
-        // Return the name of the JSP page where the results will be displayed
-        return "log-results"; // Ensure this matches the path of your JSP file
+    
+        // Return the JSP page name
+        return "log-results";
     }
+    
 }
