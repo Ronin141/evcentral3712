@@ -48,6 +48,5 @@ public final class ConnectorStatus {
     private boolean jsonAndDisconnected = false;
     
     @Setter
-    @Builder.Default
-    private String description = "";
+    private String description;
 }

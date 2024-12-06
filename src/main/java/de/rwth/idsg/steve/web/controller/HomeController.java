@@ -95,7 +95,7 @@ public class HomeController {
         // Example usage: Retrieve description by ChargeBoxId
         for(ConnectorStatus cs : filteredList) {
         	Optional<String> description = descriptionService.getDescriptionByChargeBoxId(cs.getChargeBoxId(), cpList, filteredList);
-        	description.ifPresent(desc -> cs.setDescription(desc));
+        	description.ifPresent(cs::setDescription);
         }
 
         // Add attributes to the model

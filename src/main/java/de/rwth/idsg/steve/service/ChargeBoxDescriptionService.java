@@ -1,6 +1,7 @@
 package de.rwth.idsg.steve.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -10,27 +11,33 @@ import de.rwth.idsg.steve.repository.dto.ConnectorStatus;
 
 @Service
 public class ChargeBoxDescriptionService {
-	 public Optional<String> getDescriptionByChargeBoxId(
-	            String chargeBoxId, 
-	            List<ChargePoint.Overview> chargePointOverviews, 
-	            List<ConnectorStatus> connectorStatuses) {
+    public Optional<String> getDescriptionByChargeBoxId(
+            String chargeBoxId, 
+            List<ChargePoint.Overview> chargePointOverviews, 
+            List<ConnectorStatus> connectorStatuses) {
 
-	        // Find a match in ChargePoint.Overview by chargeBoxId
-	        Optional<ChargePoint.Overview> overview = chargePointOverviews.stream()
-	            .filter(cp -> cp.getChargeBoxId().equals(chargeBoxId))
-	            .findFirst();
+        // Guard clause for null inputs
+        if (chargeBoxId == null || chargePointOverviews == null || connectorStatuses == null) {
+            return Optional.empty();
+        }
 
-	        // If found in ChargePoint.Overview, return description
-	        if (overview.isPresent()) {
-	            return Optional.of(overview.get().getDescription());
-	        }
+        // Find a match in ChargePoint.Overview by chargeBoxId
+        Optional<String> descriptionFromOverview = chargePointOverviews.stream()
+            .filter(cp -> chargeBoxId.equals(cp.getChargeBoxId())) // Null-safe comparison
+            .map(ChargePoint.Overview::getDescription)
+            .filter(Objects::nonNull) // Avoid null descriptions
+            .findFirst();
 
-	        // Find a match in ConnectorStatus by chargeBoxId
-	        Optional<ConnectorStatus> connectorStatus = connectorStatuses.stream()
-	            .filter(cs -> cs.getChargeBoxId().equals(chargeBoxId))
-	            .findFirst();
+        // If not found in ChargePoint.Overview, search in ConnectorStatus
+        Optional<String> descriptionFromConnector = connectorStatuses.stream()
+            .filter(cs -> chargeBoxId.equals(cs.getChargeBoxId())) // Null-safe comparison
+            .map(ConnectorStatus::getDescription)
+            .filter(Objects::nonNull) // Avoid null descriptions
+            .findFirst();
 
-	        // If found in ConnectorStatus, return description
-	        return connectorStatus.map(ConnectorStatus::getDescription);
-	    }
+        // Combine results
+        return descriptionFromOverview.or(() -> descriptionFromConnector);
+    }
 }
+
+
