@@ -37,4 +37,6 @@ public interface TransactionRepository {
     List<Integer> getActiveTransactionIds(String chargeBoxId);
 
     TransactionDetails getDetails(int transactionPk);
+
+    Integer getLatestTransactionPK(String chargeBoxId);
 }

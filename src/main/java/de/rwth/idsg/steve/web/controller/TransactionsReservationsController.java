@@ -64,6 +64,7 @@ public class TransactionsReservationsController {
     private static final String TRANSACTIONS_PATH = "/transactions";
     private static final String TRANSACTION_STOP_PATH = "/transactions/stop/{transactionPk}";
     private static final String TRANSACTIONS_DETAILS_PATH = "/transactions/details/{transactionPk}";
+    private static final String LATEST_TRANSACTIONS_DETAILS_PATH = "/transactions/latest-details/{chargeBoxPK}";
     private static final String TRANSACTIONS_QUERY_PATH = "/transactions/query";
     private static final String RESERVATIONS_PATH = "/reservations";
     private static final String RESERVATIONS_QUERY_PATH = "/reservations/query";
@@ -92,6 +93,13 @@ public class TransactionsReservationsController {
     public String getTransactionDetails(@PathVariable("transactionPk") int transactionPk, Model model) {
         model.addAttribute("details", transactionRepository.getDetails(transactionPk));
         return "data-man/transactionDetails";
+    }
+
+    @RequestMapping(value = LATEST_TRANSACTIONS_DETAILS_PATH)
+    public String getLatestTransactionDetails(@PathVariable("chargeBoxPK") String chargeBoxPK, Model model) {
+        int latestTransactionPK = transactionRepository.getLatestTransactionPK(chargeBoxPK);
+        model.addAttribute("details", transactionRepository.getDetails(latestTransactionPK));
+        return "data-man/latestTransactionDetails";
     }
 
     @RequestMapping(value = TRANSACTIONS_QUERY_PATH)

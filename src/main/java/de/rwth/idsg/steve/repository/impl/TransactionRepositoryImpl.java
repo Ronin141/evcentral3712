@@ -355,4 +355,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                               .build();
         }
     }
+
+    @Override
+    public Integer getLatestTransactionPK(String chargeBoxId) {
+        return ctx.select(TRANSACTION.TRANSACTION_PK)
+        .from(TRANSACTION)
+        .join(CONNECTOR)
+          .on(TRANSACTION.CONNECTOR_PK.equal(CONNECTOR.CONNECTOR_PK))
+          .and(CONNECTOR.CHARGE_BOX_ID.equal(chargeBoxId))
+        .where(TRANSACTION.STOP_TIMESTAMP.isNull()) // Active transactions
+        .orderBy(TRANSACTION.START_TIMESTAMP.desc()) // Sort by latest start timestamp
+        .limit(1) // Get only the latest record
+        .fetchOne(TRANSACTION.TRANSACTION_PK); // Fetch the primary key
+    }
 }
