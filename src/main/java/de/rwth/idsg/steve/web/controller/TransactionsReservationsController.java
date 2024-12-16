@@ -22,6 +22,7 @@ import de.rwth.idsg.steve.repository.ChargePointRepository;
 import de.rwth.idsg.steve.repository.ReservationRepository;
 import de.rwth.idsg.steve.repository.ReservationStatus;
 import de.rwth.idsg.steve.repository.TransactionRepository;
+import de.rwth.idsg.steve.repository.dto.ChargePoint;
 import de.rwth.idsg.steve.service.OcppTagService;
 import de.rwth.idsg.steve.service.TransactionStopService;
 import de.rwth.idsg.steve.web.dto.ReservationQueryForm;
@@ -97,9 +98,19 @@ public class TransactionsReservationsController {
 
     @RequestMapping(value = LATEST_TRANSACTIONS_DETAILS_PATH)
     public String getLatestTransactionDetails(@PathVariable("chargeBoxPK") String chargeBoxPK, Model model) {
-        int latestTransactionPK = transactionRepository.getLatestTransactionPK(chargeBoxPK);
+        Integer latestTransactionPK = transactionRepository.getLatestTransactionPK(chargeBoxPK);
+        // System.out.println(latestTransactionPK);
+        Integer cPK = Integer.parseInt(chargeBoxPK);
+        ChargePoint.Details cp = chargePointRepository.getDetails(cPK);
         model.addAttribute("details", transactionRepository.getDetails(latestTransactionPK));
-        return "data-man/latestTransactionDetails";
+        model.addAttribute("cpDetail", cp);
+        if(latestTransactionPK != null){
+            return "data-man/latestTransactionDetails";
+        } else {
+            System.out.println("asas");
+            return "data-man/noLatestTransaction";
+        }
+        
     }
 
     @RequestMapping(value = TRANSACTIONS_QUERY_PATH)

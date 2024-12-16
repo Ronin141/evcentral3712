@@ -102,7 +102,7 @@
 				<c:forEach items="${connectorStatusList}" var="cs">
 					<tr>
 						<td>
-							<a href="${ctxPath}/manager/chargepoints/details/${cs.chargeBoxPk}">${cs.chargeBoxId}</a>
+							<a href="${ctxPath}/manager/transactions/latest-details/${cs.chargeBoxPk}">${cs.chargeBoxId}</a>
 							<c:if test="${cs.jsonAndDisconnected}">
 								<a class="tooltip" href="#"><img src="${ctxPath}/static/images/offline-icon.svg" style="height: 1em">
 									<span>This JSON charge point is currently disconnected. The status information of its

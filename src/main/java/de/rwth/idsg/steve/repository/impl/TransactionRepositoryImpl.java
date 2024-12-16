@@ -358,14 +358,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public Integer getLatestTransactionPK(String chargeBoxId) {
-        return ctx.select(TRANSACTION.TRANSACTION_PK)
-        .from(TRANSACTION)
-        .join(CONNECTOR)
-          .on(TRANSACTION.CONNECTOR_PK.equal(CONNECTOR.CONNECTOR_PK))
-          .and(CONNECTOR.CHARGE_BOX_ID.equal(chargeBoxId))
-        .where(TRANSACTION.STOP_TIMESTAMP.isNull()) // Active transactions
-        .orderBy(TRANSACTION.START_TIMESTAMP.desc()) // Sort by latest start timestamp
-        .limit(1) // Get only the latest record
-        .fetchOne(TRANSACTION.TRANSACTION_PK); // Fetch the primary key
+        Integer cId = Integer.parseInt(chargeBoxId);
+        // System.out.println(cId);
+        return ctx.select(CONNECTOR_METER_VALUE.TRANSACTION_PK)
+                .from(CONNECTOR_METER_VALUE)
+                // .join(CONNECTOR)
+                //     .on(CONNECTOR_METER_VALUE.CONNECTOR_PK.equal(CONNECTOR.CONNECTOR_PK))
+                //     .and(CONNECTOR.CHARGE_BOX_ID.equal(chargeBoxId))
+                .where(CONNECTOR_METER_VALUE.CONNECTOR_PK.equal(cId))
+                .orderBy(CONNECTOR_METER_VALUE.VALUE_TIMESTAMP.desc()) // Sort by the latest timestamp in CONNECTOR_METER_VALUE
+                .limit(1) // Get only the latest record
+                .fetchOneInto(Integer.class); // Fetch the primary key safely
     }
+
 }
