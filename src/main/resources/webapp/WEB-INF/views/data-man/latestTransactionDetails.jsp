@@ -36,12 +36,12 @@
     <table class="res">
         <thead>
         <tr>
+            <th>Charging Details</th>
+            <th>Location</th>
             <th data-sort="date">Value Timestamp</th>
             <th data-sort="int">Value</th>
-            <th>Reading Context</th>
-            <th>Format</th>
-            <th>Measurand</th>
-            <th>Location</th>
+            <%-- <th>Reading Context</th> --%>
+            <%-- <th>Format</th> --%>
             <th>Unit</th>
             <th>Phase</th>
         </tr>
@@ -49,12 +49,12 @@
         <tbody>
         <c:forEach items="${details.values}" var="v">
             <tr>
-                <td data-sort-value="${v.valueTimestamp.millis}">${v.valueTimestamp}</td>
-                <td><encode:forHtml value="${v.value}" /></td>
-                <td><encode:forHtml value="${v.readingContext}" /></td>
-                <td><encode:forHtml value="${v.format}" /></td>
                 <td><encode:forHtml value="${v.measurand}" /></td>
                 <td><encode:forHtml value="${v.location}" /></td>
+                <td data-sort-value="${v.valueTimestamp.millis}">${v.valueTimestamp}</td>
+                <td><encode:forHtml value="${v.value}" /></td>
+                <%-- <td><encode:forHtml value="${v.readingContext}" /></td> --%>
+                <%-- <td><encode:forHtml value="${v.format}" /></td> --%>
                 <td><encode:forHtml value="${v.unit}" /></td>
                 <td><encode:forHtml value="${v.phase}" /></td>
             </tr>

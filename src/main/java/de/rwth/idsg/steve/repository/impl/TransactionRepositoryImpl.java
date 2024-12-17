@@ -51,6 +51,7 @@ import static jooq.steve.db.tables.ConnectorMeterValue.CONNECTOR_METER_VALUE;
 import static jooq.steve.db.tables.OcppTag.OCPP_TAG;
 import static jooq.steve.db.tables.Transaction.TRANSACTION;
 import static jooq.steve.db.tables.TransactionStart.TRANSACTION_START;
+import static jooq.steve.db.tables.TransactionStop.TRANSACTION_STOP;
 
 /**
  * @author Sevket Goekay <sevketgokay@gmail.com>
@@ -362,8 +363,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // System.out.println(cId);
         return ctx.select(CONNECTOR_METER_VALUE.TRANSACTION_PK)
                 .from(CONNECTOR_METER_VALUE)
-                // .join(CONNECTOR)
-                //     .on(CONNECTOR_METER_VALUE.CONNECTOR_PK.equal(CONNECTOR.CONNECTOR_PK))
+                // .join(TRANSACTION_STOP)
+                //     .on(CONNECTOR_METER_VALUE.CONNECTOR_PK.equal(TRANSACTION_STOP.CONNECTOR_PK))
                 //     .and(CONNECTOR.CHARGE_BOX_ID.equal(chargeBoxId))
                 .where(CONNECTOR_METER_VALUE.CONNECTOR_PK.equal(cId))
                 .orderBy(CONNECTOR_METER_VALUE.VALUE_TIMESTAMP.desc()) // Sort by the latest timestamp in CONNECTOR_METER_VALUE
