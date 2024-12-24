@@ -99,8 +99,11 @@ public class TransactionsReservationsController {
     @RequestMapping(value = LATEST_TRANSACTIONS_DETAILS_PATH)
     public String getLatestTransactionDetails(@PathVariable("chargeBoxPK") String chargeBoxPK, Model model) {
         Integer latestTransactionPK = transactionRepository.getLatestTransactionPK(chargeBoxPK);
-        // System.out.println(latestTransactionPK);
+        System.out.println("TX: " + latestTransactionPK);
+        
         Integer cPK = Integer.parseInt(chargeBoxPK);
+        System.out.println("chargebox_id2: " + chargeBoxPK);
+        // Integer cPK = latestTransactionPK;
         ChargePoint.Details cp = chargePointRepository.getDetails(cPK);
         model.addAttribute("details", transactionRepository.getDetails(latestTransactionPK));
         model.addAttribute("cpDetail", cp);
@@ -171,5 +174,9 @@ public class TransactionsReservationsController {
         initList(model);
         model.addAttribute("statusList", ReservationStatus.getValues());
     }
+
+    // private getChargeBoxPk(String chargeBoxId) {
+
+    // }
 
 }

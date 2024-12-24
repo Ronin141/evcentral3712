@@ -39,4 +39,5 @@ public interface TransactionRepository {
     TransactionDetails getDetails(int transactionPk);
 
     Integer getLatestTransactionPK(String chargeBoxId);
+
 }

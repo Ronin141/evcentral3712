@@ -94,6 +94,7 @@ public class HomeController {
 
         // Example usage: Retrieve description by ChargeBoxId
         for(ConnectorStatus cs : filteredList) {
+            // System.out.println(cs.getConnectorId());
         	Optional<String> description = descriptionService.getDescriptionByChargeBoxId(cs.getChargeBoxId(), cpList, filteredList);
         	description.ifPresent(cs::setDescription);
         }

@@ -360,7 +360,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public Integer getLatestTransactionPK(String chargeBoxId) {
         Integer cId = Integer.parseInt(chargeBoxId);
-        // System.out.println(cId);
+        // Integer cId = getConnectorPK(chargeBoxId);
+        // System.out.println("chargebox_id: " + cId);
         return ctx.select(CONNECTOR_METER_VALUE.TRANSACTION_PK)
                 .from(CONNECTOR_METER_VALUE)
                 // .join(TRANSACTION_STOP)
@@ -370,6 +371,15 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 .orderBy(CONNECTOR_METER_VALUE.VALUE_TIMESTAMP.desc()) // Sort by the latest timestamp in CONNECTOR_METER_VALUE
                 .limit(1) // Get only the latest record
                 .fetchOneInto(Integer.class); // Fetch the primary key safely
+    }
+
+    private Integer getConnectorPK(String chargeBoxId) {
+        // Fetch the primary key for the given chargeBoxId
+        return ctx.select(CONNECTOR.CONNECTOR_PK)
+                .from(CONNECTOR)
+                .where(CONNECTOR.CHARGE_BOX_ID.eq(chargeBoxId)) // Use JOOQ's eq() method
+                .limit(1) // Ensures only one record is retrieved
+                .fetchOneInto(Integer.class); // Fetch as an Integer
     }
 
 }
